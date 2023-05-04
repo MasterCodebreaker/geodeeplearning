@@ -1,5 +1,5 @@
 from vistools import *
-from SimpleGNN import SimpleGNN, train_eval_loop_gnn_cora 
+from SimpleGNN import SimpleGNN, train_eval_loop_gnn_cora, SimpleGNN_w_n
 from SimpleMLP import SimpleMLP, train_eval_loop 
 
 from torch_geometric.datasets import Planetoid
@@ -45,14 +45,7 @@ if __name__ == "__main__":
     print(f"Test shape x: {test_x.shape}, y: {test_y.shape}")
 
 
-    # Instantiate our model and optimiser
-    A = cora_data.get_adjacency_matrix()
-    X = cora_data.get_fullx()
-
-    train_mask = cora_data.train_mask
-    valid_mask = cora_data.valid_mask
-    test_mask = cora_data.test_mask
-
+    """
     # MLP
     print("MPL task")
     # Instantiate our model 
@@ -61,11 +54,19 @@ if __name__ == "__main__":
     # Run training loop
     train_stats_mlp_cora = train_eval_loop(model, train_x, train_y, valid_x, valid_y, test_x, test_y)
     plot_stats(train_stats_mlp_cora, name="MLP_Cora")
+    """
 
     # simple GCN
     print("GCN task 1.3")
-    
+    """ 
+    # Instantiate our model and optimiser
+    A = cora_data.get_adjacency_matrix()
+    X = cora_data.get_fullx()
     model = SimpleGNN(input_dim=train_x.shape[-1], output_dim=7, A=A)
+
+    train_mask = cora_data.train_mask
+    valid_mask = cora_data.valid_mask
+    test_mask = cora_data.test_mask
 
     # Run training loop
     train_stats_gnn_cora = train_eval_loop_gnn_cora(model, X, train_y, train_mask, 
@@ -73,3 +74,23 @@ if __name__ == "__main__":
                                               X, test_y, test_mask
                                            )
     plot_stats(train_stats_gnn_cora, name="GNN_Cora")
+    """
+    print("Task 1.4")
+
+
+    # Instantiate our model and optimiser
+    A = cora_data.get_adjacency_matrix()
+
+    X = cora_data.get_fullx()
+    n = 2# number of nghb
+    model = SimpleGNN_w_n(input_dim=train_x.shape[-1], output_dim=7, A=A, n = n)
+
+    train_mask = cora_data.train_mask
+    valid_mask = cora_data.valid_mask
+    test_mask = cora_data.test_mask
+
+    # Run training loop
+    train_stats_gnn_cora = train_eval_loop_gnn_cora(model, X, train_y, train_mask, 
+                                              X, valid_y, valid_mask, 
+                                              X, test_y, test_mask
+                                           )

@@ -1,5 +1,5 @@
 from vistools import *
-
+from tqdm import tqdm
 # @title [RUN] Hyperparameters GNN
 
 NUM_EPOCHS =  100 #@param {type:"integer"}
@@ -68,6 +68,27 @@ class SimpleGNN(nn.Module):
         self.output_dim = output_dim
         self.A = A
         self.gcn_layer = GCNLayer(input_dim, output_dim, A)
+
+    def forward(self, x):
+        x = self.gcn_layer(x)
+        # y_hat = F.log_softmax(x, dim=1) <- old version
+        y_hat = x
+        return y_hat
+
+class SimpleGNN_w_n(nn.Module):
+    """Simple GNN model using the GCNLayer implemented by students
+
+    Args:
+        input_dim (int): Dimensionality of the input feature vectors
+        output_dim (int): Dimensionality of the output softmax distribution
+        A (torch.Tensor): 2-D adjacency matrix
+    """
+    def __init__(self, input_dim, output_dim, A,n):
+        super(SimpleGNN_w_n, self).__init__()
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.A = torch.matrix_power(A, n)
+        self.gcn_layer = GCNLayer(input_dim, output_dim, self.A)
 
     def forward(self, x):
         x = self.gcn_layer(x)
