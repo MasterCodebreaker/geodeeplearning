@@ -155,7 +155,7 @@ def plot_stats(training_stats, figsize=(5, 5), name=""):
     for key, axx in zip(stats_names, ax.reshape(-1,)):
         axx.plot(
             training_stats['epoch'],
-            training_stats[f'train_{key}'],
+            [x.detach() for x in training_stats[f'train_{key}']],
             label=f"Training {key}")
         axx.plot(
             training_stats['epoch'],
@@ -165,6 +165,7 @@ def plot_stats(training_stats, figsize=(5, 5), name=""):
         axx.set_ylabel(key)
         axx.legend()
     plt.title(name)
+    plt.show()
 
 
 def get_color_coded_str(i, color):
